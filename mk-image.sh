@@ -1,44 +1,33 @@
 #!/bin/bash -e
 
 TARGET_ROOTFS_DIR=./binary
-MOUNTPOINT=./rootfs
-ROOTFSIMAGE=ubuntu-$IMAGE_VERSION-rootfs.img
+
+if [ $RK_ROOTFS_IMAGE ]; then
+	ROOTFSIMAGE=$RK_ROOTFS_IMAGE
+else
+	ROOTFSIMAGE=ubuntu-$TARGET-rootfs.img
+fi
 
 echo Making rootfs!
 
 if [ -e ${ROOTFSIMAGE} ]; then
-	rm ${ROOTFSIMAGE}
-fi
-if [ -e ${MOUNTPOINT} ]; then
-	rm -r ${MOUNTPOINT}
+	rm -f ${ROOTFSIMAGE}
 fi
 
-sudo ./post-build.sh $TARGET_ROOTFS_DIR
+# for script in ./post-build.sh ../device/rockchip/common/post-build.sh; do
+# 	[ -x $script ] || continue
+# 	sudo $script "$(realpath "$TARGET_ROOTFS_DIR")"
+# done
 
-# Create directories
-mkdir ${MOUNTPOINT}
-dd if=/dev/zero of=${ROOTFSIMAGE} bs=1M count=0 seek=6000
+sudo ./add-build-info.sh ${TARGET_ROOTFS_DIR}
 
-finish() {
-	sudo umount ${MOUNTPOINT} || true
-	echo -e "[ MAKE ROOTFS FAILED. ]"
-	exit -1
-}
+# Apparent size + maxium alignment(file_count * block_size) + maxium journal size
+IMAGE_SIZE_MB=$(( $(sudo du --apparent-size -sm ${TARGET_ROOTFS_DIR} | cut -f1) + \
+	$(sudo find ${TARGET_ROOTFS_DIR} | wc -l) * 4 / 1024 + 64 ))
 
-echo Format rootfs to ext4
-mkfs.ext4 ${ROOTFSIMAGE}
+# Extra 10%
+IMAGE_SIZE_MB=$(( $IMAGE_SIZE_MB * 110 / 100 ))
 
-echo Mount rootfs to ${MOUNTPOINT}
-sudo mount  ${ROOTFSIMAGE} ${MOUNTPOINT}
-trap finish ERR
-
-echo Copy rootfs to ${MOUNTPOINT}
-sudo cp -rfp ${TARGET_ROOTFS_DIR}/*  ${MOUNTPOINT}
-
-echo Umount rootfs
-sudo umount ${MOUNTPOINT}
+sudo mkfs.ext4 -d ${TARGET_ROOTFS_DIR} ${ROOTFSIMAGE} ${IMAGE_SIZE_MB}M
 
 echo Rootfs Image: ${ROOTFSIMAGE}
-
-e2fsck -p -f ${ROOTFSIMAGE}
-resize2fs -M ${ROOTFSIMAGE}

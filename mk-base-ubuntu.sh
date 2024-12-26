@@ -14,25 +14,13 @@ if [ ! $TARGET ]; then
 	read input
 
 	case $input in
-		0)
-			exit;;
-		1)
-			TARGET=gnome
-			;;
-		2)
-			TARGET=xfce
-			;;
-		3)
-			TARGET=lite
-			;;
-		4)
-			TARGET=gnome-full
-			;;
-		5)
-			TARGET=xfce-full
-			;;
-		*)
-			echo -e "\033[47;36m input TARGET version number error, exit ! \033[0m"
+		0)  exit;;
+		1)  TARGET=gnome ;;
+		2)  TARGET=xfce ;;
+		3)  TARGET=lite ;;
+		4)  TARGET=gnome-full ;;
+		5)  TARGET=xfce-full ;;
+		*)  echo -e "\033[47;36m input TARGET version number error, exit ! \033[0m"
 			exit;;
 	esac
     echo -e "\033[47;36m set TARGET=$TARGET...... \033[0m"
@@ -242,7 +230,3 @@ EOF
 DATE=$(date +%Y%m%d)
 echo -e "\033[47;36m Run tar pack ubuntu-base-$TARGET-$ARCH-$DATE.tar.gz \033[0m"
 sudo tar zcf ubuntu-base-$TARGET-$ARCH-$DATE.tar.gz $TARGET_ROOTFS_DIR
-
-# sudo rm $TARGET_ROOTFS_DIR -r
-
-echo -e "\033[47;36m normal exit \033[0m"
