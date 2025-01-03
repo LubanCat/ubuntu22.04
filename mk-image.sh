@@ -5,7 +5,7 @@ TARGET_ROOTFS_DIR=./binary
 if [ $RK_ROOTFS_IMAGE ]; then
 	ROOTFSIMAGE=$RK_ROOTFS_IMAGE
 else
-	ROOTFSIMAGE=ubuntu-$TARGET-rootfs.img
+	ROOTFSIMAGE=ubuntu-$SOC-$TARGET-rootfs.img
 fi
 
 echo Making rootfs!

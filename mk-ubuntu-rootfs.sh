@@ -353,4 +353,4 @@ EOF
 
 sudo umount $TARGET_ROOTFS_DIR/dev
 
-TARGET=$TARGET ./mk-image.sh 
+TARGET=$TARGET SOC=$SOC ./mk-image.sh 
