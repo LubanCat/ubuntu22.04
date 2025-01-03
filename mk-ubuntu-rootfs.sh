@@ -213,26 +213,17 @@ export APT_INSTALL="apt-get install -fy --allow-downgrades"
 echo -e "\033[47;36m ---------- LubanCat -------- \033[0m"
 apt purge initramfs-tools -y
 
-\${APT_INSTALL} dialog toilet u-boot-tools edid-decode logrotate
+\${APT_INSTALL} dialog toilet u-boot-tools edid-decode logrotate fire-config lbc-test
 if [[ "$TARGET" == "gnome" || "$TARGET" == "gnome-full" ]]; then
-    if [ $MIRROR ]; then
-        \${APT_INSTALL} fire-config fire-config-gui lbc-test
-    fi
-    \${APT_INSTALL} gdisk
+    \${APT_INSTALL} gdisk fire-config-gui
     #Desktop background picture
     ln -sf /usr/share/xfce4/backdrops/lubancat-wallpaper.png /usr/share/backgrounds/warty-final-ubuntu.png
 elif [[ "$TARGET" == "xfce" || "$TARGET" == "xfce-full" ]]; then
-    if [ $MIRROR ]; then
-        \${APT_INSTALL} fire-config fire-config-gui lbc-test
-    fi
     \apt-get remove -y gnome-bluetooth
-    \${APT_INSTALL} bluez bluez-tools
+    \${APT_INSTALL} bluez bluez-tools fire-config-gui
     #Desktop background picture
     ln -sf /usr/share/xfce4/backdrops/lubancat-wallpaper.png /usr/share/xfce4/backdrops/xubuntu-wallpaper.png
 elif [ "$TARGET" == "lite" ]; then
-    if [ $MIRROR ]; then
-        \${APT_INSTALL} fire-config lbc-test
-    fi
     \${APT_INSTALL} bluez bluez-tools
 fi
 
