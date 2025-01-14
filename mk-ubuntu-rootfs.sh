@@ -255,14 +255,14 @@ fi
 
 if [[ "$TARGET" == "gnome" || "$TARGET" == "gnome-full" ]]; then
     echo -e "\033[47;36m ----- Install Xserver------- \033[0m"
-    \${APT_INSTALL} /packages/xserver/xserver-xorg-*.deb
+    \${APT_INSTALL} /packages/xserver/*.deb
 
-    apt-mark hold xserver-xorg-core xserver-xorg-legacy
+    apt-mark hold xserver-common xserver-xorg-core xserver-xorg-legacy xserver-xorg-dev
 elif [[ "$TARGET" == "xfce" || "$TARGET" == "xfce-full" ]]; then
     echo -e "\033[47;36m ----- Install Xserver------- \033[0m"
     \${APT_INSTALL} /packages/xserver/*.deb
 
-    apt-mark hold xserver-common xserver-xorg-core xserver-xorg-legacy
+    apt-mark hold xserver-common xserver-xorg-core xserver-xorg-legacy xserver-xorg-dev
 fi
 
 
