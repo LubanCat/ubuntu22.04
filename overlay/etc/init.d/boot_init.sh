@@ -177,10 +177,15 @@ board_info() {
 		esac
 	elif [[ "$2" == "rk3576" ]]; then
 			case $1 in
-			0000 | 0002)
+			0000)
 				BOARD_NAME='LubanCat-3'
 				BOARD_DTB='rk3576-lubancat-3.dtb'
 				BOARD_uEnv='uEnvLubanCat3.txt'
+				;;
+			0001)
+				BOARD_NAME='LubanCat-3IO'
+				BOARD_DTB='rk3576-lubancat-3io.dtb'
+				BOARD_uEnv='uEnvLubanCat3IO.txt'
 				;;
 			*)
 				echo "Device ID Error !!!"
