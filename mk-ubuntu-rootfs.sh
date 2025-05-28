@@ -164,9 +164,6 @@ if [ "$VERSION" == "debug" ]; then
     sudo cp -rpf overlay-debug/* $TARGET_ROOTFS_DIR/
 fi
 
-# Prevent dpkg interactive dialogues
-export DEBIAN_FRONTEND=noninteractive
-
 ## hack the serial
 sudo cp -f overlay/usr/lib/systemd/system/serial-getty@.service $TARGET_ROOTFS_DIR/lib/systemd/system/serial-getty@.service
 
@@ -177,7 +174,7 @@ elif [ "$ARCH" == "arm64"  ]; then
     sudo cp /usr/bin/qemu-aarch64-static $TARGET_ROOTFS_DIR/usr/bin/
 fi
 
-sudo mount -o bind /dev $TARGET_ROOTFS_DIR/dev
+./ch-mount.sh -m $TARGET_ROOTFS_DIR
 
 ID=$(stat --format %u $TARGET_ROOTFS_DIR)
 
@@ -208,6 +205,7 @@ apt-get upgrade -y
 chmod o+x /usr/lib/dbus-1.0/dbus-daemon-launch-helper
 chmod +x /etc/rc.local
 
+export DEBIAN_FRONTEND=noninteractive
 export APT_INSTALL="apt-get install -fy --allow-downgrades"
 
 echo -e "\033[47;36m ---------- LubanCat -------- \033[0m"
@@ -256,15 +254,12 @@ fi
 if [[ "$TARGET" == "gnome" || "$TARGET" == "gnome-full" ]]; then
     echo -e "\033[47;36m ----- Install Xserver------- \033[0m"
     \${APT_INSTALL} /packages/xserver/*.deb
-
     apt-mark hold xserver-common xserver-xorg-core xserver-xorg-legacy xserver-xorg-dev
 elif [[ "$TARGET" == "xfce" || "$TARGET" == "xfce-full" ]]; then
     echo -e "\033[47;36m ----- Install Xserver------- \033[0m"
     \${APT_INSTALL} /packages/xserver/*.deb
-
     apt-mark hold xserver-common xserver-xorg-core xserver-xorg-legacy xserver-xorg-dev
 fi
-
 
 if [[ "$TARGET" == "gnome" ||  "$TARGET" == "xfce" || "$TARGET" == "gnome-full" || "$TARGET" == "xfce-full" ]]; then
     echo -e "\033[47;36m ----- Install Camera ------- \033[0m"
@@ -290,17 +285,14 @@ echo -e "\033[47;36m ------- Install libdrm ------ \033[0m"
 if [[ "$TARGET" == "gnome" ||  "$TARGET" == "xfce" || "$TARGET" == "gnome-full" || "$TARGET" == "xfce-full" ]]; then
     echo -e "\033[47;36m ------ libdrm-cursor -------- \033[0m"
     \${APT_INSTALL} /packages/libdrm-cursor/*.deb
-fi
 
-if [[ "$TARGET" == "gnome" ||  "$TARGET" == "xfce" || "$TARGET" == "gnome-full" || "$TARGET" == "xfce-full" ]]; then
     if [ "$VERSION" == "debug" ]; then
         echo -e "\033[47;36m ------ Install glmark2 ------ \033[0m"
         \${APT_INSTALL} glmark2-es2
     fi
 fi
 
-if [ -e "/usr/lib/aarch64-linux-gnu" ] ;
-then
+if [ -e "/usr/lib/aarch64-linux-gnu" ] ; then
 echo -e "\033[47;36m ------- move rknpu2 --------- \033[0m"
 mv /packages/rknpu2/rknpu2.tar  /
 fi
@@ -344,6 +336,7 @@ then
     rm /etc/profile.d/qt.sh
 fi
 
+rm -rf /home/$(whoami)
 rm -rf /var/lib/apt/lists/*
 rm -rf /var/cache/
 rm -rf /packages/
@@ -351,6 +344,6 @@ rm -rf /boot/*
 
 EOF
 
-sudo umount $TARGET_ROOTFS_DIR/dev
+./ch-mount.sh -u $TARGET_ROOTFS_DIR
 
-TARGET=$TARGET SOC=$SOC ./mk-image.sh 
+source ./mk-image.sh 
