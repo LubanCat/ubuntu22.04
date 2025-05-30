@@ -42,11 +42,11 @@ sudo rm -rf $TARGET_ROOTFS_DIR/
 if [ ! -d $TARGET_ROOTFS_DIR ] ; then
     sudo mkdir -p $TARGET_ROOTFS_DIR
 
-    if [ ! -e ubuntu-base-22.04.4-base-$ARCH.tar.gz ]; then
-        echo "\033[36m wget ubuntu-base-22.04.4-base-"$ARCH".tar.gz \033[0m"
-        wget -c http://cdimage.ubuntu.com/ubuntu-base/releases/22.04/release/ubuntu-base-22.04.4-base-$ARCH.tar.gz
+    if [ ! -e ubuntu-base-22.04.5-base-$ARCH.tar.gz ]; then
+        echo "\033[36m wget ubuntu-base-22.04.5-base-"$ARCH".tar.gz \033[0m"
+        wget -c http://cdimage.ubuntu.com/ubuntu-base/releases/22.04/release/ubuntu-base-22.04.5-base-$ARCH.tar.gz
     fi
-    sudo tar -xzf ubuntu-base-22.04.4-base-$ARCH.tar.gz -C $TARGET_ROOTFS_DIR/
+    sudo tar -xzf ubuntu-base-22.04.5-base-$ARCH.tar.gz -C $TARGET_ROOTFS_DIR/
     sudo cp -b /etc/resolv.conf $TARGET_ROOTFS_DIR/etc/resolv.conf
     sudo cp sources.list $TARGET_ROOTFS_DIR/etc/apt/sources.list
 
@@ -70,6 +70,7 @@ echo -e "\033[47;36m Change root.................... \033[0m"
 
 cat <<EOF | sudo chroot $TARGET_ROOTFS_DIR/
 
+export DEBIAN_FRONTEND=noninteractive
 export APT_INSTALL="apt-get install -fy --allow-downgrades"
 
 export LC_ALL=C.UTF-8
@@ -78,38 +79,18 @@ apt-get -y update
 apt-get -f -y upgrade
 
 if [ "$TARGET" == "gnome" ]; then
-    DEBIAN_FRONTEND=noninteractive apt install -y ubuntu-desktop-minimal rsyslog sudo dialog apt-utils ntp evtest onboard
-    mv /var/lib/dpkg/info/ /var/lib/dpkg/info_old/
-    mkdir /var/lib/dpkg/info/
-    apt-get update
-    DEBIAN_FRONTEND=noninteractive apt install -y ubuntu-desktop-minimal rsyslog sudo dialog apt-utils ntp evtest onboard
-    mv /var/lib/dpkg/info_old/* /var/lib/dpkg/info/
+   \${APT_INSTALL} ubuntu-desktop-minimal rsyslog sudo dialog apt-utils ntp evtest onboard
 elif [ "$TARGET" == "xfce" ]; then
-    DEBIAN_FRONTEND=noninteractive apt install -y xubuntu-core onboard rsyslog sudo dialog apt-utils ntp evtest udev
-    mv /var/lib/dpkg/info/ /var/lib/dpkg/info_old/
-    mkdir /var/lib/dpkg/info/
-    apt-get update
-    DEBIAN_FRONTEND=noninteractive apt install -y xubuntu-core onboard rsyslog sudo dialog apt-utils ntp evtest udev
-    mv /var/lib/dpkg/info_old/* /var/lib/dpkg/info/
+    \${APT_INSTALL} xubuntu-core rsyslog sudo dialog apt-utils ntp evtest udev
 elif [ "$TARGET" == "lite" ]; then
-    DEBIAN_FRONTEND=noninteractive apt install -y rsyslog sudo dialog apt-utils ntp evtest acpid
+    \${APT_INSTALL} rsyslog sudo dialog apt-utils ntp evtest acpid
 elif [ "$TARGET" == "gnome-full" ]; then
-    DEBIAN_FRONTEND=noninteractive apt install -y ubuntu-desktop-minimal rsyslog sudo dialog apt-utils ntp evtest onboard
-    mv /var/lib/dpkg/info/ /var/lib/dpkg/info_old/
-    mkdir /var/lib/dpkg/info/
-    apt-get update
-    DEBIAN_FRONTEND=noninteractive apt install -y ubuntu-desktop-minimal rsyslog sudo dialog apt-utils ntp evtest onboard
-    mv /var/lib/dpkg/info_old/* /var/lib/dpkg/info/
+    \${APT_INSTALL} ubuntu-desktop-minimal rsyslog sudo dialog apt-utils ntp evtest onboard
 elif [ "$TARGET" == "xfce-full" ]; then
-    DEBIAN_FRONTEND=noninteractive apt install -y xubuntu-desktop onboard rsyslog sudo dialog apt-utils ntp evtest udev
-    # mv /var/lib/dpkg/info/ /var/lib/dpkg/info_old/
-    # mkdir /var/lib/dpkg/info/
-    # apt-get update
-    # DEBIAN_FRONTEND=noninteractive apt install -y xubuntu-core onboard rsyslog sudo dialog apt-utils ntp evtest udev
-    # mv /var/lib/dpkg/info_old/* /var/lib/dpkg/info/
+    \${APT_INSTALL} xubuntu-desktop rsyslog sudo dialog apt-utils ntp evtest udev
 fi
 
-\${APT_INSTALL} net-tools openssh-server ifupdown alsa-utils ntp network-manager gdb inetutils-ping libssl-dev \
+\${APT_INSTALL} net-tools openssh-server ifupdown alsa-utils network-manager gdb inetutils-ping libssl-dev \
     vsftpd tcpdump can-utils i2c-tools strace vim iperf3 ethtool netplan.io toilet htop pciutils usbutils curl \
     whiptail gnupg bc xinput gdisk parted gcc sox libsox-fmt-all gpiod libgpiod-dev python3-pip python3-libgpiod \
     guvcview u-boot-tools bash-completion
@@ -152,7 +133,7 @@ fi
 if [[ "$TARGET" == "gnome" || "$TARGET" == "gnome-full" ]]; then
     \${APT_INSTALL} mpv acpid gnome-sound-recorder
 elif [[ "$TARGET" == "xfce" || "$TARGET" == "xfce-full" ]]; then
-    \${APT_INSTALL} mpv acpid gnome-sound-recorder
+    \${APT_INSTALL} mpv acpid
 elif [ "$TARGET" == "lite" ]; then
     \${APT_INSTALL}  
 fi
