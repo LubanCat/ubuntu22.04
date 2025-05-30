@@ -77,7 +77,8 @@ install_packages() {
         ;;
         rk3562)
         MALI=bifrost-g52-g13p0
-        MALI_PKG=libmali-*$MALI*-x11-wayland-gbm*
+        MALI_PKG=libmali-*$MALI*-x11-gbm*
+        [[ "$TARGET" =~ ^gnome(-full)?$ ]] && MALI_PKG=libmali-*$MALI*-x11-wayland-gbm*
         ISP=rkaiq_rk3562
         MIRROR=carp-rk356x
         ;;
@@ -341,6 +342,7 @@ rm -rf /var/lib/apt/lists/*
 rm -rf /var/cache/
 rm -rf /packages/
 rm -rf /boot/*
+rm -rf /root/.bash_history
 
 EOF
 
