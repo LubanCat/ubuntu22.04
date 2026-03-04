@@ -77,25 +77,28 @@ install_packages() {
         ;;
         rk3562)
         MALI=bifrost-g52-g13p0
-        MALI_PKG=libmali-*$MALI*-x11-gbm*
-        [[ "$TARGET" =~ ^gnome(-full)?$ ]] && MALI_PKG=libmali-*$MALI*-x11-wayland-gbm*
+        MALI_PKG=libmali-*$MALI*-x11-wayland-gbm*
+        [[ "$TARGET" =~ xfce(-full)?$ ]] && MALI_PKG=libmali-*$MALI*-x11-gbm*
         ISP=rkaiq_rk3562
         MIRROR=carp-rk356x
         ;;
         rk356x|rk3566|rk3568)
         MALI=bifrost-g52-g13p0
         MALI_PKG=libmali-*$MALI*-x11-wayland-gbm*
+        [[ "$TARGET" =~ xfce(-full)?$ ]] && MALI_PKG=libmali-*$MALI*-x11-gbm*
         ISP=rkaiq_rk3568
         MIRROR=carp-rk356x
         ;;
         rk3576)
         MALI=bifrost-g52-g13p0
         MALI_PKG=libmali-*$MALI*-x11-wayland-gbm*
+        [[ "$TARGET" =~ xfce(-full)?$ ]] && MALI_PKG=libmali-*$MALI*-x11-gbm*
         ISP=rkaiq_rk3576
         ;;
         rk3588|rk3588s)
         MALI=valhall-g610-g24p0
         MALI_PKG=libmali-*$MALI*-x11-wayland-gbm*
+        [[ "$TARGET" =~ xfce(-full)?$ ]] && MALI_PKG=libmali-*$MALI*-x11-gbm*
         ISP=rkaiq_rk3588
         MIRROR=carp-rk3588
         ;;
