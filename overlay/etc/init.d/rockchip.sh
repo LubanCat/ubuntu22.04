@@ -179,4 +179,4 @@ if [ -e /usr/lib/aarch64-linux-gnu/ ]; then
 fi
 
 # sync system time
-hwclock --systohc
+# hwclock --systohc
