@@ -213,7 +213,8 @@ export DEBIAN_FRONTEND=noninteractive
 export APT_INSTALL="apt-get install -fy --allow-downgrades"
 
 echo -e "\033[47;36m ---------- LubanCat -------- \033[0m"
-\${APT_INSTALL} dialog toilet u-boot-tools edid-decode logrotate fire-config lbc-test fdisk usbmount mmc-utils fio libaio-dev
+\${APT_INSTALL} dialog toilet u-boot-tools edid-decode logrotate fire-config lbc-test fdisk mmc-utils fio libaio-dev
+\${APT_INSTALL} --install-recommends usbmount
 if [[ "$TARGET" == "gnome" || "$TARGET" == "gnome-full" ]]; then
     \${APT_INSTALL} gdisk fire-config-gui
     #Desktop background picture
